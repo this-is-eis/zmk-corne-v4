@@ -46,13 +46,57 @@
 
 / {
     behaviors {
-        td0: td0 {
-            compatible = "zmk,behavior-tap-dance";
-            display-name = "Shift/Caps Lock Tap Dance";
-            #binding-cells = <0>;
-            bindings = <&kp LEFT_SHIFT>, <&kp CAPS>;
+        as: auto_shift {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping_term_ms = <250>;
+            quick_tap_ms = <0>;
+            require-prior-idle-ms = <50>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
         };
-
+        // No prior idle is useful for preventing typos, but key presses
+        // done after layer triggers have no need of prior idle.
+        as_ni: auto_shift_no_idle {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping_term_ms = <250>;
+            quick_tap_ms = <0>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+        lh: layer_tap_hold_preffered {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping_term_ms = <200>;
+            flavor = "hold-preferred";
+            bindings = <&mo>, <&kp>;
+        };
+        td_d_c: tap_dance_dot_comma {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <250>;
+            bindings = <&kp DOT>, <&kp COMMA>;
+        };
+        td_hrgn: tap_dance_hiragana {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <250>;
+            bindings = <&kp LC(CAPS)>, <&kp LS(CAPS)>;
+        };
+        td_ktkn: tap_dance_katakana {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <250>;
+            bindings = <&kp LA(CAPS)>, <&kp LS(CAPS)>;
+        };
+        td_lnf_ent: tap_dance_layer_num_fun_enter {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&lh L_NUM ENTER>, <&mo L_FUN>;
+        };
+        
         rsr_vol: rsr_vol {
             compatible = "zmk,behavior-runtime-sensor-rotate";
             #sensor-binding-cells = <0>;
@@ -76,45 +120,62 @@
             key-positions = <1 15 29>;
         };
     };
-
+ 
+//  TODO: check if sensor binding is safe to remove
+// also might be best to use the local compiler 
+// then check for configs
+// lastly, learn to use urob combos and home row
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
             display-name = "QWERTY";
             bindings = <
-&kp TAB    &kp Q  &kp W  &kp E     &kp R  &kp T             &kp Y        &kp U  &kp I      &kp O    &kp P     &kp BSPC
-&td0       &kp A  &kp S  &kp D     &kp F  &kp G             &kp H        &kp J  &kp K      &kp L    &kp SEMI  &kp SQT
-&kp LCTRL  &kp Z  &kp X  &kp C     &kp V  &kp B             &kp N        &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp ESC
-                         &kp LGUI  &mo 1  &lt 3 SPACE       &lt 3 ENTER  &mo 2  &kp RALT
+ &kp TAB   AS(Q)     AS(W)     AS(E)     AS(R)     AS(T)         AS(Y)     AS(U)     AS(I)     AS(O)     AS(P)     AS(MINUS)
+ &kp LSHFT AS(A)     AS(S)     AS(D)     AS(F)     AS(G)         AS(H)     AS(J)     AS(K)     AS(L)     AS(SEMI)  AS(SQT) 
+ &kp LCTRL AS(Z)     AS(X)     AS(C)     AS(V)     AS(B)         AS(N)     AS(M)     AS(COMMA) AS(DOT)   AS(FSLH)  AS(BSLH) 
+                              &kp LGUI  LNF_ENT  LNAV_SPC        &kp BSPC  LNUM_ENT  &kp ESC
             >;
 
             sensor-bindings = <&rsr_vol &rsr_trans>;
         };
 
         navigation_layer {
+            display-name = "NAV";
             bindings = <
-&trans    BT_CLR_A  BT_SEL_0  BT_SEL_1  BT_SEL_2  BT_SEL_3       &kp INS  &kp HOME  &kp UP    &kp END   &kp PG_UP &trans
-&trans    &kp LGUI  &kp LALT  &kp LCTRL &kp LSHFT &trans         CW_TOGG  &kp LEFT  &kp DOWN  &kp RIGHT &kp PG_DN &trans
-&trans    &trans    &mkp LCLK &mkp MCLK &mkp RCLK &trans         &trans   &kp FSLH  &kp BSLH  &kp QMARK &kp PIPE  &trans
+&trans    BT_CLR_A  BT_SEL_0  BT_SEL_1  BT_SEL_2  BT_SEL_3       &kp INS  &kp BSPC  &kp UP    &kp DEL   &trans    &kp PG_UP
+&trans    &kp LGUI  &kp LALT  &kp LCTRL &kp LSHFT &trans         CW_TOGG  &kp LEFT  &kp DOWN  &kp RIGHT &kp ENTER &kp PG_DN
+&trans    &trans    &mkp LCLK &mkp MCLK &mkp RCLK &trans         &trans   &kp HOME  &kp TAB   &kp END   &trans    &trans
                               &trans    &trans    &trans         &trans   &trans    &trans
             >;
         };
 
         number_layer {
-            display-name = "NUMBER";
+            display-name = "NUM";
             bindings = <   
-&trans    &kp N1    &kp N2    &kp N3    &kp N4    &kp N5         &kp N6    &kp N7    &kp N8    &kp N9     &kp N0    &kp BSPC
-&trans    BT_CLR_A  BT_SEL_0  BT_SEL_1  BT_SEL_2  BT_SEL_3       &kp LEFT  &kp DOWN  &kp UP    &kp RIGHT  &kp HOME  &kp PG_UP
-&trans    &trans    &trans    &trans    &trans    &trans         &trans    &trans    &trans    &trans     &kp END   &kp PG_DN
-                              &trans    &trans    &trans         &kp INS   &kp DEL   &trans
+AS(GRAVE) ASN(LBKT) ASN(N7)   ASN(N8)   ASN(N9)   ASN(RBKT)      &trans   &trans    &trans    &trans    &trans    &trans
+ASN(SQT)  ASN(N0)   ASN(N4)   ASN(N5)   ASN(N6)   ASN(EQUAL)     &trans   ASN(N0)   &td_d_c   &kp ESC   &kp BSPC  &trans
+ASN(BSLH) ASN(FSLH) ASN(N1)   ASN(N2)   ASN(N3)   ASN(MINUS)     &trans   &trans    ASN(GRAVE) &trans    &trans    &trans
+                              &td_d_c   ASN(N0)   &kp SPACE      &trans   &trans   &trans
             >;
 
             sensor-bindings = <&rsr_vol &rsr_trans>;
         };
 
-        raise_layer {
-            display-name = "SYMBOL";
+function_layer {
+            display-name = "Fn";
+            bindings = <
+&trans    &kp F12   &kp F7    &kp F8    &kp F9    &kp PSCRN      &trans   &trans    &trans    &trans    &trans    &trans
+&trans    &kp F11   &kp F4    &kp F5    &kp F6    &td_ktkn       BOOTLDER &mkp LCLK &mkp MCLK &mkp RCLK &kp PSCRN &kp F12
+&trans    &kp F10   &kp F1    &kp F2    &kp F3    &td_hrgn       &trans   &trans    BOOTLDER  SYSRESET  &kp SLCK  &trans
+                              &trans    &trans    &kp SPACE      &trans     &trans    &trans
+            >;
+
+            sensor-bindings = <&rsr_vol &rsr_trans>;
+        };
+
+        symbol_layer {
+            display-name = "SYM";
             bindings = <
 &trans    &kp EXCL  &kp AT    &kp HASH  &kp DLLR  &kp PRCNT      &kp CARET  &kp AMPS  &kp ASTRK &kp LPAR  &kp RPAR  &kp BSPC
 &trans    BTCLR     &mkp LCLK &mkp MCLK &mkp RCLK &mkp MB4       &kp MINUS  &kp EQUAL &kp LBKT  &kp RBKT  &kp BSLH  &kp GRAVE
@@ -125,16 +186,6 @@
             sensor-bindings = <&rsr_vol &rsr_trans>;
         };
 
-        function_layer {
-            display-name = "Fn";
-            bindings = <
-STD_UNL   &kp F1    &kp F2    &kp F3    &kp F4    &kp F5      &kp F6     &kp F7    &kp F8    &kp F9    &kp F10   &kp F11
-&trans    &trans    &mkp LCLK &mkp MCLK &mkp RCLK &mkp MB4    BOOTLDER   &mkp LCLK &mkp MCLK &mkp RCLK &kp PSCRN &kp F12
-&trans    SYSRESET  &trans    BOOTLDER  &trans    &mkp MB5    &trans     &trans    BOOTLDER  SYSRESET  &kp SLCK  &kp PAUSE_BREAK
-                              &trans    &trans    &trans      &trans     &trans    &trans
-            >;
-
-            sensor-bindings = <&rsr_vol &rsr_trans>;
-        };
+        
     };
 };

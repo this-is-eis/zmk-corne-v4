@@ -178,7 +178,7 @@ function_layer {
             display-name = "Fn";
             bindings = <
 &trans    &kp F12   &kp F7    &kp F8    &kp F9    &kp PSCRN      &trans   &trans    &trans    &trans    &trans    &trans
-&trans    &kp F11   &kp F4    &kp F5    &kp F6    &td_ktkn       BOOTLDER &mkp LCLK &mkp MCLK &mkp RCLK &kp PSCRN &kp F12
+BOOTLDER  &kp F11   &kp F4    &kp F5    &kp F6    &td_ktkn       BOOTLDER &mkp LCLK &mkp MCLK &mkp RCLK &kp PSCRN &kp F12
 &trans    &kp F10   &kp F1    &kp F2    &kp F3    &td_hrgn       &trans   &trans    BOOTLDER  SYSRESET  &kp SLCK  &trans
                               &trans    &trans    &kp SPACE      &trans   &trans    &trans
             >;

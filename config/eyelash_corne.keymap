@@ -39,6 +39,7 @@
 #define BT_SEL_1 &bt BT_SEL 1
 #define BT_SEL_2 &bt BT_SEL 2
 #define BT_SEL_3 &bt BT_SEL 3
+#define BT_SEL_4 &bt BT_SEL 4
 
 #define STD_UNL  &studio_unlock
 #define BOOTLDER &bootloader
@@ -120,6 +121,17 @@
             key-positions = <1 15 29>;
         };
     };
+
+    macros {
+        m_ths: m_ths {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&kp N0>,
+                <&kp N0>,
+                <&kp N0>;
+        };
+    };
  
 //  TODO: check if sensor binding is safe to remove
 // also might be best to use the local compiler 
@@ -143,19 +155,19 @@
         navigation_layer {
             display-name = "NAV";
             bindings = <
-&trans    BT_CLR_A  BT_SEL_0  BT_SEL_1  BT_SEL_2  BT_SEL_3       &kp INS  &kp BSPC  &kp UP    &kp DEL   &trans    &kp PG_UP
+&trans    BT_SEL_0  BT_SEL_1  BT_SEL_2  BT_SEL_3  BT_SEL_4       &kp INS  &kp HOME  &kp UP    &kp END   &trans    &kp PG_UP
 &trans    &kp LGUI  &kp LALT  &kp LCTRL &kp LSHFT &trans         CW_TOGG  &kp LEFT  &kp DOWN  &kp RIGHT &kp ENTER &kp PG_DN
-&trans    &trans    &mkp LCLK &mkp MCLK &mkp RCLK &trans         &trans   &kp HOME  &kp TAB   &kp END   &trans    &trans
-                              &trans    &trans    &trans         &trans   &trans    &trans
+&trans    &trans    &trans    &kp DEL   &kp BSPC  &trans         &trans   &kp BSPC  &kp TAB   &kp DEL   &trans    &trans
+                              BT_CLR_A  &trans    &trans         &trans   &trans    &trans
             >;
         };
 
         number_layer {
             display-name = "NUM";
             bindings = <   
-AS(GRAVE) ASN(LBKT) ASN(N7)   ASN(N8)   ASN(N9)   ASN(RBKT)      &trans   &trans    &trans    &trans    &trans    &trans
-ASN(SQT)  ASN(N0)   ASN(N4)   ASN(N5)   ASN(N6)   ASN(EQUAL)     &trans   ASN(N0)   &td_d_c   &kp ESC   &kp BSPC  &trans
-ASN(BSLH) ASN(FSLH) ASN(N1)   ASN(N2)   ASN(N3)   ASN(MINUS)     &trans   &trans    ASN(GRAVE) &trans    &trans    &trans
+ASN(GRAVE) ASN(LBKT) ASN(N7)   ASN(N8)   ASN(N9)   ASN(RBKT)     &trans   &trans   &trans    &trans    &trans     &trans
+ASN(SQT)  ASN(N0)   ASN(N4)   ASN(N5)   ASN(N6)   ASN(EQUAL)     &trans   &trans   &trans    &kp ESC   &trans     &trans
+ASN(BSLH) ASN(FSLH) ASN(N1)   ASN(N2)   ASN(N3)   ASN(MINUS)     &m_ths   ASN(N0)  AS(COMMA) AS(DOT)   &kp BSPC   &trans
                               &td_d_c   ASN(N0)   &kp SPACE      &trans   &trans   &trans
             >;
 
@@ -168,7 +180,7 @@ function_layer {
 &trans    &kp F12   &kp F7    &kp F8    &kp F9    &kp PSCRN      &trans   &trans    &trans    &trans    &trans    &trans
 &trans    &kp F11   &kp F4    &kp F5    &kp F6    &td_ktkn       BOOTLDER &mkp LCLK &mkp MCLK &mkp RCLK &kp PSCRN &kp F12
 &trans    &kp F10   &kp F1    &kp F2    &kp F3    &td_hrgn       &trans   &trans    BOOTLDER  SYSRESET  &kp SLCK  &trans
-                              &trans    &trans    &kp SPACE      &trans     &trans    &trans
+                              &trans    &trans    &kp SPACE      &trans   &trans    &trans
             >;
 
             sensor-bindings = <&rsr_vol &rsr_trans>;
